@@ -18,3 +18,16 @@
     # remove the original portions of the cluster from the table
     # so on so forth
 
+# How we can partition the work?
+    # One of us works on traversal (fxn for finding the smallest nearest neighbor)
+
+    # Another works on computing distance between new clusters
+
+    # Then one of us works on removing original portions from the table (ex if we get
+    #   {AB} then we remove A and B from row/col
+
+    # After that we also need to consider getting user input to put into the table, but
+    #   for now we can work with pre-set values from the slides because trying user inputs
+    #   while implementing the WGMA algorithm will just make things confusing
+    # But it shouldnt take too long on its own, so whoever did only 1 of the above tasks
+    #   can take this one
