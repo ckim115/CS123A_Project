@@ -1,3 +1,14 @@
+# IN MAIN:
+#   take in a input txt file. make Sequence objects using the sequences
+# inputted in the file. Then pass this list of sequences to Tree
+
+
+
+
+
+
+
+
 # For now just getting general thoughts on the project direction
 
 # WPGMA/UPGMA
