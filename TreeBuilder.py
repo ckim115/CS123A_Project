@@ -45,6 +45,18 @@ class Tree:
             # remove original seqs NN
             for i in range(len(self.seqList)):
                 for j in range(len(self.seqList)):
-                    if not self.seqList[i] == self.seqList[j]:
-                        min(minDist, computeDistance(self.seqList[i], self.seqList[j]))
+                    seq1 = self.seqList[i]
+                    seq2 = self.seqList[j]
+                    if not i == j:
+                        # TODO: check if i/j contains a tuple
+                        d = Tree.computeDistance(seq1, seq2)
+                        if minDist > d:
+                            minDist = d
+                            NN = (seq1, seq2)
+            # push new sequence pair onto list of sequences
+            self.seqList.push(NN)
+            # remove original elements
+            self.seqList.remove(NN[0])
+            self.seqList.remove(NN[1])
+
         self.tree = NN
