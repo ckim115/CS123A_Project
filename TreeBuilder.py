@@ -90,17 +90,6 @@ class Tree:
         #         dif += 1
         # return dif
 
-    # # remove specific sequence/sequence pair from list
-    # def remove(self, seq):
-    #     for i in range(len(self.seqList)):
-    #         otherSeq = self.seqList[i]
-    #         if type(otherSeq) is tuple and type(seq) is tuple:
-    #             return
-    #         if type(otherSeq) is Sequence and type(seq) is Sequence:
-    #             if otherSeq.eq(seq):
-    #                 self.seqList.pop(i)
-    #                 return
-
     # here the main algorithm will occur
     def startWPGMA(self):
         NN = tuple()
@@ -122,11 +111,26 @@ class Tree:
                             minDist = d
                             NN = (seq1, seq2)
                             print("Current nearest neighbor:", NN[0], NN[1], "at dist", d)
-            # push new sequence pair onto list of sequences
-            self.seqList.append(NN)
+
             # remove original elements
             print("Final neighbors:", NN[0], NN[1])
             self.seqList.remove(NN[0])
             self.seqList.remove(NN[1])
 
+            # push new sequence pair onto list of sequences
+            print("Adding NN to list")
+            self.seqList.append(NN)
+            minDist = math.inf # reset minDist
+
         self.tree = NN
+
+    def getStr(self, tree):
+        inner = ""
+        if type(tree) is tuple:
+            inner += Tree.getStr(self, tree[0]) + ", "+ Tree.getStr(self, tree[1])
+        else:
+            return str(tree)
+        return ("(" + inner + ")")
+
+    def __str__(self):
+        return Tree.getStr(self, self.tree)

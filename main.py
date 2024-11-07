@@ -13,7 +13,7 @@ def main():
     test_tree = Tree([a, b, c, d, e])
     print("Starting WPGMA")
     test_tree.startWPGMA()
-    print(test_tree.tree)
+    print(test_tree)
 
 if __name__=="__main__":
     main()

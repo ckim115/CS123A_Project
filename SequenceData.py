@@ -9,6 +9,14 @@ class Sequence:
     def __str__(self):
         return f"{self.sci_name}"
 
-    # T/F is this sequence equal to other sequence
+    # T/F is this sequence equal to input
     def __eq__(self, seq):
-        return (self.sci_name == seq.sci_name) # and (self.sequence == seq.sequence)
+        return type(seq) is Sequence and (self.sci_name == seq.sci_name) # and (self.sequence == seq.sequence)
+
+    # T/F is this sequence not equal to input
+    def __ne__(self, seq):
+        if not type(seq) is Sequence:
+            return True
+        if self.sci_name == seq.sci_name: # and (self.sequence == seq.sequence)
+            return True
+        return False
