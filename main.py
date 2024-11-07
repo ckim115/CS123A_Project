@@ -5,12 +5,13 @@ from SequenceData import Sequence
 from TreeBuilder import Tree
 
 def main():
-    a = Sequence('A', 'idk')
-    b = Sequence('B', 'idk')
-    c = Sequence('C', 'idk')
-    d = Sequence('D', 'idk')
-    e = Sequence('E', 'idk')
+    a = Sequence('A', '')
+    b = Sequence('B', '')
+    c = Sequence('C', '')
+    d = Sequence('D', '')
+    e = Sequence('E', '')
     test_tree = Tree([a, b, c, d, e])
+    print("Starting WPGMA")
     test_tree.startWPGMA()
     print(test_tree.tree)
 
