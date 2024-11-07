@@ -1,12 +1,21 @@
 # IN MAIN:
 #   take in a input txt file. make Sequence objects using the sequences
 # inputted in the file. Then pass this list of sequences to Tree
+from SequenceData import Sequence
+from TreeBuilder import Tree
 
+def main():
+    a = Sequence('A', 'idk')
+    b = Sequence('B', 'idk')
+    c = Sequence('C', 'idk')
+    d = Sequence('D', 'idk')
+    e = Sequence('E', 'idk')
+    test_tree = Tree([a, b, c, d, e])
+    test_tree.startWPGMA()
+    print(test_tree.tree)
 
-
-
-
-
+if __name__=="__main__":
+    main()
 
 
 # For now just getting general thoughts on the project direction

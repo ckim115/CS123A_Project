@@ -24,14 +24,49 @@ class Tree:
         self.seqList = seqList
 
     # compare the distance between two sequences
+    # TODO: check if seq1/seq2 is a tuple, in which case we must calc inside first
     # return difference
+    # FOR INITIAL TESTING: JUST HARDCODE
     # TODO: Ask prof if we compare entire sequence or just until equal length
     def computeDistance(self, seq1, seq2):
-        dif = 0
-        for i in range(min(len(seq1), len(seq2))):
-            if seq1[i] != seq2[i]:
-                dif += 1
-        return dif
+        print("Computing distance between: ", seq1, " ", seq2)
+        # check for tuple
+        if type(seq1) is tuple:
+            return ((Tree.computeDistance(self, seq1[0], seq2[0]) + Tree.computeDistance(self, seq1[1], seq2[1]) + Tree.computeDistance(self, seq1[1], seq2[0]) + Tree.computeDistance(self, seq1[1], seq2[1]))/2)
+        if type(seq2) is tuple:
+            return ((Tree.computeDistance(self, seq1, seq2[0]) + Tree.computeDistance(self, seq1, seq2[1]))/2)
+        if type(seq1) is tuple:
+            return ((Tree.computeDistance(self, seq1[0], seq2) + Tree.computeDistance(self, seq1[1], seq2))/2)
+        if seq1.sci_name == 'A':
+            if seq2.sci_name == 'B':
+                return 20
+            if seq2.sci_name == 'C':
+                return 60
+            if seq2.sci_name == 'D':
+                return 100
+            if seq2.sci_name == 'E':
+                return 90
+        if seq1.sci_name == 'B':
+            if seq2.sci_name == 'C':
+                return 50
+            if seq2.sci_name == 'D':
+                return 90
+            if seq2.sci_name == 'E':
+                return 80
+        if seq1.sci_name == 'C':
+            if seq2.sci_name == 'D':
+                return 40
+            if seq2.sci_name == 'E':
+                return 50
+        if seq1.sci_name == 'D':
+            if seq1.sci_name == 'E':
+                return 30
+        # BELOW: only for testing after initial hardcoded testing
+        # dif = 0
+        # for i in range(min(len(seq1), len(seq2))):
+        #     if seq1[i] != seq2[i]:
+        #         dif += 1
+        # return dif
 
     # here the main algorithm will occur
     def startWPGMA(self):
@@ -44,15 +79,15 @@ class Tree:
             # create tuple with NN (eg (A, B)). Add to seqList
             # remove original seqs NN
             for i in range(len(self.seqList)):
-                for j in range(len(self.seqList)):
+                for j in range(i+1, len(self.seqList)):
                     seq1 = self.seqList[i]
                     seq2 = self.seqList[j]
                     if not i == j:
-                        # TODO: check if i/j contains a tuple
-                        d = Tree.computeDistance(seq1, seq2)
+                        d = Tree.computeDistance(self, seq1, seq2)
                         if minDist > d:
                             minDist = d
                             NN = (seq1, seq2)
+                            print("Current nearest neighbor: ", NN, "at dist", d)
             # push new sequence pair onto list of sequences
             self.seqList.push(NN)
             # remove original elements
