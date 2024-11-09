@@ -28,6 +28,7 @@ class Tree:
     # return difference
     # FOR INITIAL TESTING: JUST HARDCODE
     # TODO: Ask prof if we compare entire sequence or just until equal length
+    
     def computeDistance(self, seq1, seq2):
         print("\tComputing distance between:", seq1, seq2)
         # check for tuple
@@ -130,3 +131,4 @@ class Tree:
             self.seqList.remove(NN[1])
 
         self.tree = NN
+
