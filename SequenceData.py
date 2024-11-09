@@ -20,3 +20,16 @@ class Sequence:
         if self.sci_name == seq.sci_name: # and (self.sequence == seq.sequence)
             return True
         return False
+
+    #Prints the scientific name and the sequence in a readable format.
+    def print_sequence(self):
+        print(f"Scientific Name: {self.sci_name}")
+        print("Sequence: ".join(self.sequence))
+
+    #Returns the sequence as a string.
+    def get_sequence(self):
+        return "".join(self.sequence)
+    
+    #Returns the length of the sequence.    
+    def get_length(self):
+        return len(self.sequence)

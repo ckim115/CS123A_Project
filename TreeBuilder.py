@@ -28,6 +28,7 @@ class Tree:
     # return difference
     # FOR INITIAL TESTING: JUST HARDCODE
     # TODO: Ask prof if we compare entire sequence or just until equal length
+    
     def computeDistance(self, seq1, seq2):
         print("\tComputing distance between:", seq1, seq2)
         # check for tuple
@@ -116,7 +117,6 @@ class Tree:
             print("Final neighbors:", NN[0], NN[1])
             self.seqList.remove(NN[0])
             self.seqList.remove(NN[1])
-
             # push new sequence pair onto list of sequences
             print("Adding NN to list")
             self.seqList.append(NN)
