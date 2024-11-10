@@ -22,12 +22,12 @@ def test_ultrametricity(distance_matrix):
                     return "Tree is non ultrametric"
     return "tree is ultrametric"
 
-class WPGMA:
+class WPGMA2:
     def __init__(self, distance_matrix, labels):
         self.distance_matrix = np.array(distance_matrix)
         self.labels = labels
-        self.tree = []
-        self.tree_vis = []
+        self.tree = {}  # dict
+        self.cur_tree = self.tree
     
     # Find the pair of clusters with the smallest distance
     def find_min_distance(self):
@@ -63,8 +63,20 @@ class WPGMA:
 
     # Merge two clusters and update the tree.
     def merge_clusters(self, x, y, distance):
-        new_label = f"({self.labels[x]}:{(distance/2):.2f},{self.labels[y]}:{(distance/2):.2f})"
-        self.tree.append((new_label, distance / 2))  # Store as half of the distance
+        # find individual branch lengths for each node
+        distance_x = distance_y = distance/2
+
+        # if a label has a preexisting length, we know its actual distance should be the difference
+        #   between the label's distance and the given distance
+        if self.labels[x] in self.tree:
+            distance_x = distance_x - self.tree.get(self.labels[x])
+        if self.labels[y] in self.tree:
+            distance_y = distance_y - self.tree.get(self.labels[y])
+
+        # in the label, put the individual distances
+        new_label = f"({self.labels[x]}:{(distance_x):.2f},{self.labels[y]}:{(distance_y):.2f})"
+        self.cur_tree = new_label
+        self.tree[new_label]= distance / 2 # Store as half of the distance; this = total distance
         # Merge clusters and update labels
         self.labels = [lbl for i, lbl in enumerate(self.labels) if i != x and i != y] + [new_label]
     
@@ -74,9 +86,9 @@ class WPGMA:
             x, y, min_dist = self.find_min_distance()
             self.merge_clusters(x, y, float(min_dist))
             self.update_distance_matrix(x, y)
-        return self.tree
+        return self.cur_tree
         
     def print_tree(self):
         print("WPGMA Tree (Cluster, Distance):")
-        for node in self.tree:
-            print(f"{node[0]} : {node[1]:.2f}")
+        for key, val in self.tree.items():
+            print(f"{key} : {val:.2f}")
