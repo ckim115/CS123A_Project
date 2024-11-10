@@ -1,5 +1,27 @@
 import numpy as np
 
+
+# The function to check if a matrix is ultrametric
+def test_ultrametricity(distance_matrix):
+    num_sequences = len(distance_matrix)
+
+    # Check ultrametric condition for each triplet of sequences
+    for i in range(num_sequences):
+        for j in range(i + 1, num_sequences):
+            for k in range(j + 1, num_sequences):
+                # Get the distances for the triplet
+                d_ij = distance_matrix[i][j]
+                d_ik = distance_matrix[i][k]
+                d_jk = distance_matrix[j][k]
+                
+                # Check the ultrametric inequality: 
+                # The maximum distance should occur at least twice
+                if not ((d_ij <= (d_ik+d_jk)) and 
+                        (d_ik <= (d_ij+d_jk)) and 
+                        (d_jk <= (d_ij+d_ik))):
+                    return "Tree is non ultrametric"
+    return "tree is ultrametric"
+
 class WPGMA:
     def __init__(self, distance_matrix, labels):
         self.distance_matrix = np.array(distance_matrix)

@@ -1,11 +1,11 @@
 # IN MAIN:
 #   take in a input txt file. make Sequence objects using the sequences
 # inputted in the file. Then pass this list of sequences to Tree
-from SequenceData import Sequence
-from TreeBuilder import Tree
+from SequenceData import Sequence 
+import TreeBuilder
 import numpy as np
-from PolyTree import WPGMA
-from SeqAlignment import SequenceAlignment
+import PolyTree
+import SeqAlignment
 
 def main():
     a = Sequence('A', '')
@@ -13,13 +13,13 @@ def main():
     c = Sequence('C', '')
     d = Sequence('D', '')
     e = Sequence('E', '')
-    test_tree = Tree([a, b, c, d, e])
+    test_tree = TreeBuilder.Tree([a, b, c, d, e])
     print("Starting WPGMA")
     test_tree.startWPGMA()
     print(test_tree)
     
 #---------------------------------------------------   
-    # class Example 
+# class Example - ultrametric 
 labels_1 = ["A", "B", "C", "D","E"]
 distance_matrix = [
     [0,   20, 60,  100,90],
@@ -28,13 +28,17 @@ distance_matrix = [
     [100, 90, 40,  0,  30],
     [90, 80,  50,  30,  0],
 ]
+# Check if the matrix is ultrametric
+is_ultrametric = PolyTree.test_ultrametricity(distance_matrix)
+print(str(is_ultrametric))
+print()
 
 # Test WPGMA algorithm for class example
-wpgma = WPGMA(distance_matrix, labels_1)
+wpgma = PolyTree.WPGMA(distance_matrix, labels_1)
 wpgma_tree = wpgma.build_tree()
 wpgma.print_tree()
 #----------------------------------------------------
- # new example:
+ # new example - non ultrametric:
 label_3 = ["s1","s2","s3","s4","s5","s6"]
 sequences_3 = [
     "ATGCATGC",    # Sequence 1
@@ -45,7 +49,7 @@ sequences_3 = [
     "CCC GTGA"     # Sequence 6
 ]
 
-alignment = SequenceAlignment(sequences_3)
+alignment = SeqAlignment.Score(sequences_3)
 # Compute pairwise distances
 matrix_3 = alignment.compute_pairwise_distances()
 
@@ -56,12 +60,12 @@ alignment.print_distance_matrix(matrix_3)
 print()
 
 # Check if the matrix is ultrametric
-is_ultrametric = alignment.is_ultrametric(matrix_3)
-print("The tree is "+str(is_ultrametric))
+is_ultrametric = PolyTree.test_ultrametricity(matrix_3)
+print(str(is_ultrametric))
 print()
 
 # Run the WPGMA algorithm
-wpgma2 = WPGMA(matrix_3, label_3)
+wpgma2 = PolyTree.WPGMA(matrix_3, label_3)
 wpgma_tree = wpgma2.build_tree()
 wpgma2.print_tree()
   

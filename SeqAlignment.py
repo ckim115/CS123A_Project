@@ -1,7 +1,7 @@
 import numpy as np
 
 # This class calculates the optimal alignment score for some sequences using the Needleman-Wunsch algorithm.
-class SequenceAlignment:
+class Score:
     def __init__(self, sequences, match_score=1, gap_penalty=-2, mismatch_penalty=-1):
         self.sequences = sequences
         self.match_score = match_score
@@ -46,25 +46,6 @@ class SequenceAlignment:
 
         return distance_matrix
     
-    # This function determine if a distance matrix of some sequences can form an ultrametric tree
-    def is_ultrametric(self, distance_matrix):
-        num_sequences = len(distance_matrix)
-
-        # Check ultrametric condition for each triplet of sequences
-        for i in range(num_sequences):
-            for j in range(i + 1, num_sequences):
-                for k in range(j + 1, num_sequences):
-                    d_ij = distance_matrix[i][j]
-                    d_ik = distance_matrix[i][k]
-                    d_jk = distance_matrix[j][k]
-
-                    # Check the ultrametric inequality
-                    max_dist = max(d_ij, d_ik, d_jk)
-                    if not ((d_ij == max_dist or d_ik == max_dist or d_jk == max_dist) and 
-                            (d_ij <= max_dist and d_ik <= max_dist and d_jk <= max_dist)):
-                        return "non ultrametric"
-        return "ultrametric"
-
     def print_distance_matrix(self, distance_matrix):
         labels = [f"Seq{i+1}" for i in range(len(self.sequences))]
         print("Pairwise Distance Matrix:")
@@ -72,3 +53,4 @@ class SequenceAlignment:
         for i, label in enumerate(labels):
             row = "  ".join(f"{distance_matrix[i][j]:6.2f}" for j in range(len(labels)))
             print(f"{label}  {row}")
+            
