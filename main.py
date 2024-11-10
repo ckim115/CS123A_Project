@@ -1,23 +1,10 @@
 # IN MAIN:
 #   take in a input txt file. make Sequence objects using the sequences
 # inputted in the file. Then pass this list of sequences to Tree
-from SequenceData import Sequence 
-import TreeBuilder
 import numpy as np
 import PolyTree
 import SeqAlignment
 
-def main():
-    a = Sequence('A', '')
-    b = Sequence('B', '')
-    c = Sequence('C', '')
-    d = Sequence('D', '')
-    e = Sequence('E', '')
-    test_tree = TreeBuilder.Tree([a, b, c, d, e])
-    print("Starting WPGMA")
-    test_tree.startWPGMA()
-    print(test_tree)
-    
 #---------------------------------------------------   
 # class Example - ultrametric 
 labels_1 = ["A", "B", "C", "D","E"]
@@ -68,10 +55,6 @@ print()
 wpgma2 = PolyTree.WPGMA(matrix_3, label_3)
 wpgma_tree = wpgma2.build_tree()
 wpgma2.print_tree()
-  
-if __name__=="__main__":
-    main()
-
 
 # For now just getting general thoughts on the project direction
 
