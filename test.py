@@ -45,11 +45,11 @@ alignment.print_distance_matrix(matrix_3)
 print()
 
 # Check if the matrix is ultrametric
-is_ultrametric = PolyTree2.test_ultrametricity(matrix_3)
+is_ultrametric = PolyTree.test_ultrametricity(matrix_3)
 print(str(is_ultrametric))
 print()
 
-nj = PolyTree2.NeighborJoining(matrix_3, label_3)
+nj = PolyTree.NeighborJoining(matrix_3, label_3)
 tree = nj.build_tree()
 nj.print_tree()
 

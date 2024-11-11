@@ -113,7 +113,7 @@ class NeighborJoining:
         row_sums = np.sum(self.distance_matrix, axis=1)
         d_i = 0.5 * self.distance_matrix[i, j] + (row_sums[i] - row_sums[j]) / (2 * (n - 2))
         d_j = self.distance_matrix[i, j] - d_i
-        return d_i, d_j
+        return round(d_i,3), round(d_j,3)
     
     def update_distance_matrix(self, i, j, new_label):
         n = len(self.distance_matrix)
@@ -152,7 +152,7 @@ class NeighborJoining:
             self.tree.append(new_label)
             self.update_distance_matrix(i, j, new_label)
         # Handle the final two remaining labels
-        final_dist = self.distance_matrix[0, 1]
+        final_dist = round(self.distance_matrix[0, 1],3)
         self.tree.append(f"({self.labels[0]}:{final_dist / 2}, {self.labels[1]}:{final_dist / 2})")
 
     def print_tree(self):
