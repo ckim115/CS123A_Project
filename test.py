@@ -4,7 +4,7 @@ import PolyTree
 import SeqAlignment
 import numpy as np
 
-# class Example
+# class Example - ultrametric
 labels_1 = ["A", "B", "C", "D", "E"]
 distance_matrix = [
     [0, 20, 60, 100, 90],
@@ -23,6 +23,7 @@ display = TreeDisplay(labels_1, wpgma_tree)
 display.visualize()
 
 #--------------------------------------------
+#Example of using NeighborJoining - non ultrametric
 label_3 = ["s1","s2","s3","s4","s5","s6"]
 sequences_3 = [
     "ATGCATGC",    # Sequence 1
@@ -48,11 +49,9 @@ is_ultrametric = PolyTree2.test_ultrametricity(matrix_3)
 print(str(is_ultrametric))
 print()
 
-# Run the WPGMA algorithm
-wpgma2 = PolyTree2.WPGMA2(matrix_3, label_3)
-wpgma_tree = wpgma2.build_tree()
-wpgma2.print_tree()
+nj = PolyTree2.NeighborJoining(matrix_3, label_3)
+tree = nj.build_tree()
+nj.print_tree()
 
-print(wpgma_tree)
-display = TreeDisplay(labels_1, wpgma_tree)
+display = TreeDisplay(label_3, nj)
 display.visualize()
