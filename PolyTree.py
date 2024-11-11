@@ -86,7 +86,8 @@ class NeighborJoining:
         self.distance_matrix = np.array(distance_matrix, dtype=float)
         self.labels = labels[:]
         self.tree = []
-
+    # biuld second matrix derived from the distance matrix ,named Q matrix
+    # Q matrix is used to identify which nodes to merge
     def compute_q_matrix(self):
         n = len(self.distance_matrix)
         q_matrix = np.zeros((n, n))
@@ -97,7 +98,7 @@ class NeighborJoining:
                 q_matrix[i, j] = (n - 2) * self.distance_matrix[i, j] - row_sums[i] - row_sums[j]
                 q_matrix[j, i] = q_matrix[i, j]
         return q_matrix
-
+    # find lowest value in Q matrix
     def find_min_q(self, q_matrix):
         min_val = np.inf
         x, y = -1, -1
@@ -111,10 +112,21 @@ class NeighborJoining:
     def calculate_branch_lengths(self, i, j):
         n = len(self.distance_matrix)
         row_sums = np.sum(self.distance_matrix, axis=1)
+        # Calculatethe branch lenghs 
         d_i = 0.5 * self.distance_matrix[i, j] + (row_sums[i] - row_sums[j]) / (2 * (n - 2))
-        d_j = self.distance_matrix[i, j] - d_i
+        d_j = 0.5 * self.distance_matrix[i, j] + (row_sums[j] - row_sums[i]) / (2 * (n - 2))
+        #Important part of algorithm
+        # sometimes HJ generate negetive branch lenght in case of handeling a non-ultrametric distance matrix
+        # one approch to fix it to make the negetive branch 0 and add same posetive amount to other branch
+        if(d_i<0):
+            d_j = d_j + abs(d_i)
+            d_i=0
+        if(d_j<0):
+            d_i = d_i + abs(d_j)
+            d_j=0    
         return round(d_i,3), round(d_j,3)
     
+    # Update distance matric after merge two elements
     def update_distance_matrix(self, i, j, new_label):
         n = len(self.distance_matrix)
         new_row = []
@@ -143,6 +155,7 @@ class NeighborJoining:
         
         # Update labels
         self.labels = [label for idx, label in enumerate(self.labels) if idx != i and idx != j] + [new_label]
+    
     def build_tree(self):
         while len(self.distance_matrix) > 2:
             q_matrix = self.compute_q_matrix()
