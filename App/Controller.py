@@ -103,7 +103,7 @@ class DashController:
     # Validate Sequence Format (Ensures only letters and newlines)
     def validate_sequence(self,seq_value):
         # Ensure the sequence contains only valid characters (letters, newlines, or '>')
-        return all(c.isalpha() or c == '\n' or c == '>' or c==" "for c in seq_value)
+        return all(c.isalpha() or c == '\n' or c == '>' or c == "_" or c == "-" or c == " " for c in seq_value)
 
     # Parse Sequences (Handles splitting multiple sequences)
     def parse_sequences(self,seq_value):
