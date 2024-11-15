@@ -1,11 +1,7 @@
-import PolyTree2
 from TreeDisplay import TreeDisplay
 import PolyTree
 import SeqAlignment
 import numpy as np
-from Bio import Phylo
-import pylab
-from io import StringIO
 
 # class Example - ultrametric
 labels_1 = ["A", "B", "C", "D", "E"]
@@ -17,7 +13,7 @@ distance_matrix = [
     [90, 80, 50, 30, 0],
 ]
 
-wpgma = PolyTree2.WPGMA2(distance_matrix, labels_1)
+wpgma = PolyTree.WPGMA(distance_matrix, labels_1)
 wpgma_tree = wpgma.build_tree()
 wpgma.print_tree()
 
