@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 from io import StringIO
 
 class TreeDisplay:
-    def __init__(self, labels, tree):
-        self.labels = labels    # the labels for each sequence
+    def __init__(self, tree):
         self.tree = tree
 
     def visualize(self):

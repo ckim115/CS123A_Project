@@ -167,6 +167,7 @@ class NeighborJoining:
         # Handle the final two remaining labels
         final_dist = round(self.distance_matrix[0, 1],3)
         self.tree.append(f"({self.labels[0]}:{final_dist / 2}, {self.labels[1]}:{final_dist / 2})")
+        return self.tree[-1]
 
     def print_tree(self):
         print("Neighbor-Joining Tree:")

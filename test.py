@@ -3,6 +3,9 @@ from TreeDisplay import TreeDisplay
 import PolyTree
 import SeqAlignment
 import numpy as np
+from Bio import Phylo
+import pylab
+from io import StringIO
 
 # class Example - ultrametric
 labels_1 = ["A", "B", "C", "D", "E"]
@@ -19,7 +22,7 @@ wpgma_tree = wpgma.build_tree()
 wpgma.print_tree()
 
 print(wpgma_tree)
-display = TreeDisplay(labels_1, wpgma_tree)
+display = TreeDisplay(wpgma_tree)
 display.visualize()
 
 #--------------------------------------------
@@ -53,5 +56,5 @@ nj = PolyTree.NeighborJoining(matrix_3, label_3)
 tree = nj.build_tree()
 nj.print_tree()
 
-display = TreeDisplay(label_3, nj)
+display = TreeDisplay(tree)
 display.visualize()
