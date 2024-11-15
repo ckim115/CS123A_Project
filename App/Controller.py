@@ -9,9 +9,15 @@ class DashController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        self.datas = []
-        self.plot_controller = None
         
+        # use this list and pass to model to calculate the scores , create distance matrix and plot the tree
+        # list is 2Xn dimention [name,sequence]
+        self.seq_list = []
+           
+        self.plot_controller = None
+        self.text_info = self.view.seq
+        self.view.seq.config(state="disable") 
+         
         # Bind the Listbox click event to the view method
         self.view.select.bind("<<ListboxSelect>>", self.view_item)
         
@@ -19,9 +25,31 @@ class DashController:
         self.view.button_browse.config(command=self.browse_item)
         self.view.button_clear.config(command=self.clear_item)
         self.view.button_delete.config(command=self.delete_item)
+        self.view.button_empty.config(command=self.clear_all_items)
+
         self.view.button_wpgma.config(command=lambda: self.plot_if_possible("WPGMA"))
         self.view.button_nj.config(command=lambda: self.plot_if_possible("Neighbor Joining"))
+        # Bind events
+        self.view.seq.bind("<FocusIn>", self.on_click)
+        self.view.seq.bind("<FocusOut>", self.on_focus_out)
+        
+    def on_click(self,event):
+        if self.view.seq.get("1.0", "end-1c") == self.view.placeholder:
+            self.view.seq.config(state="normal")
+            self.view.seq.delete("1.0", "end")
+            self.view.seq.config(fg="black")
+  
+    def on_focus_out(self,event):
+        if self.view.seq.get("1.0", "end-1c") == "":
+            self.view.seq.insert("1.0", self.view.placeholder)
+            self.view.seq.config(fg="gray")
+            self.view.seq.config(state="normal")  
             
+    # Method to clear all items from Listbox and datas list
+    def clear_all_items(self):
+        self.seq_list.clear()  # Clear the datas list
+        self.view.select.delete(0, END)  # Clear all items in the Listbox    
+               
     def add_item(self):
         # Retrieve values from entry and text widgets
         name_value = self.view.name.get().strip().replace(":", "")
@@ -59,7 +87,7 @@ class DashController:
             parsed_sequences = self.parse_sequences(seq_value)
             if parsed_sequences:
                 for name_seq_pair in parsed_sequences:
-                    self.datas.append(name_seq_pair)
+                    self.seq_list.append(name_seq_pair)
                 self.update_list()
                 self.clear_item()  # Reset fields using the correct clear() function
             else:
@@ -69,10 +97,9 @@ class DashController:
             messagebox.showwarning("Input Error", "You must provide sequence in the format '>name' following by sequence on a new line or sequence with name seperately.")
         else:
             # If both name and sequence are filled, add them to the list
-            self.datas.append([name_value, seq_value])
+            self.seq_list.append([name_value, seq_value])
             self.update_list()
             self.clear_item()
-
     # Validate Sequence Format (Ensures only letters and newlines)
     def validate_sequence(self,seq_value):
         # Ensure the sequence contains only valid characters (letters, newlines, or '>')
@@ -121,7 +148,7 @@ class DashController:
         # Clear the listbox
         self.view.select.delete(0, END)
         # Insert each name in datas into the listbox
-        for item in self.datas:
+        for item in self.seq_list:
             self.view.select.insert(END, item[0])
 
     # View Information
@@ -129,16 +156,16 @@ class DashController:
         selected_index = self.view.select.curselection()
         if selected_index:
             index = int(selected_index[0])
-            self.view.name.set(self.datas[index][0])
+            self.view.name.set(self.seq_list[index][0])
             self.view.seq.delete(1.0, "end")
-            self.view.seq.insert(1.0, self.datas[index][1])
+            self.view.seq.insert(1.0, self.seq_list[index][1])
 
     # Delete Information
     def delete_item(self):
         selected_index = self.view.select.curselection()
         if selected_index:
             index = int(selected_index[0])
-            del self.datas[index]
+            del self.seq_list[index]
             self.update_list()
             self.clear_item()
 
@@ -149,21 +176,27 @@ class DashController:
 
     # Check if there are at least 2 sequences in datas
     def check_minimum_sequences(self):
-        if len(self.datas) < 2:
+        if len(self.seq_list) < 2:
             messagebox.showwarning("Insufficient Data", "Please enter at least 2 sequences to plot the tree.")
             return False
         return True
             
     def plot_if_possible(self,tree_type):
         if self.check_minimum_sequences():
+            self.model.seq_list = self.seq_list
             self.plot_controller = PlotController(self.view.root,self.model,tree_type)
         else:
             messagebox.showwarning("Insufficient Data", "Please enter at least 2 sequences to plot the tree.")  
         return FALSE                
-
+            
 class PlotController:
     def __init__(self,root, model,tree_type):
         self.model = model
         self.root = root
+        self.info = ""# pass info of tree to this variable
         from View import PlotView
-        self.view = PlotView(root,self.model,tree_type)
+        self.model.view = PlotView(root,self.model,tree_type)
+        self.model.view.info_text.config(state="disabled",)
+
+
+        
