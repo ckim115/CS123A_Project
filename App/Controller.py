@@ -94,7 +94,7 @@ class DashController:
                 messagebox.showwarning("Input Error", "No valid sequences found in the input.")
         elif name_value == '':
             # If sequence is entered without a name (and not starting with '>'), show error
-            messagebox.showwarning("Input Error", "You must provide sequence in the format '>name' following by sequence on a new line or sequence with name seperately.")
+            messagebox.showwarning("Input Error", "Please provide input in FASTA format '>name' following by sequence on a new line or name and sequence seperately.")
         else:
             # If both name and sequence are filled, add them to the list
             self.seq_list.append([name_value, seq_value])
@@ -137,9 +137,12 @@ class DashController:
         if file_path:
             try:
                 with open(file_path, 'r') as file:
+                    self.view.seq.config(state="normal")
+                    self.view.seq.config(fg="black")
                     content = file.read().strip()
                     self.view.seq.delete(1.0, "end")  # Clear the text area before inserting the content
                     self.view.seq.insert(1.0, content)  # Insert the content of the file
+                    
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to load the file: {e}")
 

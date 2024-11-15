@@ -91,6 +91,12 @@ class WPGMA:
         print("WPGMA Tree (Cluster, Distance):")
         for key, val in self.tree.items():
             print(f"{key} : {val:.2f}")
+    
+    def tree_info(self):
+        tree_details = "WPGMA Tree (Cluster, Distance):\n"
+        for key, val in self.tree.items():
+            tree_details += f"{key} : {val:.2f}\n"
+        return tree_details      
             
 #----------------------------------------------------------------------------------
 class NeighborJoining:
@@ -185,3 +191,9 @@ class NeighborJoining:
         print("Neighbor-Joining Tree:")
         for node in self.tree:
             print(node)
+            
+    def tree_info(self):
+        tree_details = "Neighbor-Joining Tree:\n"
+        for node in self.tree:
+            tree_details += f"{node}\n"
+        return tree_details

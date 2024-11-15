@@ -48,7 +48,7 @@ class DashView:
         self.seq = Text(self.frame_left,fg="gray", wrap=WORD, width=37, height=10)
         self.scroll_text.config(command=self.seq.yview)
         self.scroll_text.pack(side=RIGHT, fill=Y)
-        self.placeholder = "Enter sequences in any of following format:\n1. Enter name and sequence seperately.\n2. Enter compact form here: e.g.\n>name\nsequence\n"
+        self.placeholder = "Enter sequences in any of following format:\n1. Name and sequence seperately.\n2. FASTA formate: e.g.\n>name\nsequence\n"
         self.seq.insert(END, self.placeholder)
         self.seq.pack(side=TOP, fill="x", padx=20, pady=5)
         

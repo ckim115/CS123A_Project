@@ -1,12 +1,11 @@
 # main.py
 from tkinter import Tk
-from App.Controller import DashController
-from App.View import DashView
 from Model import AppModel
+from View import *
+from Controller import *
 
-
-MAX_NAME_LENGTH = 20
-MAX_SEQUENCE_LENGTH = 200
+MAX_NAME_LENGTH = 100
+MAX_SEQUENCE_LENGTH = 500000
 
 if __name__ == "__main__":
     root = Tk()
