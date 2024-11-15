@@ -26,6 +26,7 @@ wpgma = PolyTree.WPGMA(distance_matrix, labels_1)
 wpgma_tree = wpgma.build_tree()
 wpgma.print_tree()
 
+print(wpgma_tree)
 display = TreeDisplay.TreeDisplay(wpgma_tree)
 display.visualize()
 #----------------------------------------------------
