@@ -2,7 +2,12 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 
+import numpy as np
+import pandas as pd
 
+import PolyTree
+import SeqAlignment
+import TreeDisplay
 
 
 class DashController:
@@ -196,10 +201,41 @@ class PlotController:
     def __init__(self,root, model,tree_type):
         self.model = model
         self.root = root
-        self.info = ""# pass info of tree to this variable
+
+        print(tree_type)
+        self.create_tree(tree_type)
+
         from View import PlotView
         self.model.view = PlotView(root,self.model,tree_type)
         self.model.view.info_text.config(state="disabled",)
 
+    def create_tree(self, tree_type):
+        df = pd.DataFrame(self.model.seq_list)
+        labels = df[0].to_numpy()
+        seqs = df[1].to_numpy()
+        alignment = SeqAlignment.Score(seqs)
+        # Compute pairwise distances
+        matrix = alignment.compute_pairwise_distances()
+
+        # Set the precision for printing NumPy arrays
+        np.set_printoptions(precision=2)
+        # Print the distance matrix
+        alignment.print_distance_matrix(matrix)
+        print()
+
+        # Check if the matrix is ultrametric
+        is_ultrametric = PolyTree.test_ultrametricity(matrix)
+        print(str(is_ultrametric))
+        print()
+
+        if tree_type == "Neighbor Joining":
+            nj = PolyTree.NeighborJoining(matrix, labels)
+        else:
+            nj = PolyTree.WPGMA(matrix, labels)
+        tree = nj.build_tree()
+        nj.print_tree()
+
+        display = TreeDisplay.TreeDisplay(tree)
+        display.visualize()
 
         

@@ -10,4 +10,4 @@ class TreeDisplay:
         tree_display = Phylo.read(StringIO(self.tree), "newick")
         print(tree_display)
         Phylo.draw(tree_display, branch_labels=lambda c: c.branch_length, do_show=False)
-        plt.savefig('App/tree.png')
+        plt.savefig('tree.png')
