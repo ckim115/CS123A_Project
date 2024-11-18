@@ -1,4 +1,5 @@
 import numpy as np
+from Bio import Align
 
 # This class calculates the optimal alignment score for some sequences using the Needleman-Wunsch algorithm.
 class Score:
@@ -7,6 +8,14 @@ class Score:
         self.match_score = match_score
         self.gap_penalty = gap_penalty
         self.mismatch_penalty = mismatch_penalty
+
+        self.aligner = Align.PairwiseAligner() # aligner for two sequences
+        self.aligner.match_score = match_score
+        self.aligner.mismatch_score = mismatch_penalty
+        self.aligner.open_gap_score = gap_penalty
+        self.aligner.extend_gap_score = gap_penalty
+        self.aligner.target_end_gap_score = 0.0
+        self.aligner.query_end_gap_score = 0.0
 
     def needleman_wunsch(self, seq1, seq2):
         len1, len2 = len(seq1), len(seq2)
@@ -38,7 +47,9 @@ class Score:
         for i in range(num_sequences):
             for j in range(i + 1, num_sequences):
                 print("getting alignment_score")
-                alignment_score = self.needleman_wunsch(self.sequences[i], self.sequences[j])
+                alignments = self.aligner.align(self.sequences[i], self.sequences[j])
+                alignment_score = alignments[0].score
+                # alignment_score = self.needleman_wunsch(self.sequences[i], self.sequences[j])
                 # This part of algorithm is . there are several ways to calculate distance.
                 # Scaled Distance Formula used here. 0 means two sequent are very close
                 # This formula asures that distance never get infinit or negetive value,always between 0 to 1

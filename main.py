@@ -31,34 +31,34 @@ display = TreeDisplay.TreeDisplay(wpgma_tree)
 display.visualize()
 #----------------------------------------------------
 # Example of using NeighborJoining - non ultrametric
-label_3 = ["s1", "s2", "s3", "s4", "s5", "s6"]
-sequences_3 = [
-    "ATGCATGC",  # Sequence 1
-    "ATGCAACG",  # Sequence 2
-    "TTCCGCCC",  # Sequence 3
-    "GCCGGTGA",  # Sequence 4
-    "CCCT C A",  # Sequence 5
-    "CCC GTGA"  # Sequence 6
-]
-
-alignment = SeqAlignment.Score(sequences_3)
-# Compute pairwise distances
-matrix_3 = alignment.compute_pairwise_distances()
-
-# Set the precision for printing NumPy arrays
-np.set_printoptions(precision=2)
-# Print the distance matrix
-alignment.print_distance_matrix(matrix_3)
-print()
-
-# Check if the matrix is ultrametric
-is_ultrametric = PolyTree.test_ultrametricity(matrix_3)
-print(str(is_ultrametric))
-print()
-
-nj = PolyTree.NeighborJoining(matrix_3, label_3)
-tree = nj.build_tree()
-nj.print_tree()
-
-display = TreeDisplay.TreeDisplay(tree)
-display.visualize()
+# label_3 = ["s1", "s2", "s3", "s4", "s5", "s6"]
+# sequences_3 = [
+#     "ATGCATGC",  # Sequence 1
+#     "ATGCAACG",  # Sequence 2
+#     "TTCCGCCC",  # Sequence 3
+#     "GCCGGTGA",  # Sequence 4
+#     "CCCT C A",  # Sequence 5
+#     "CCC GTGA"  # Sequence 6
+# ]
+#
+# alignment = SeqAlignment.Score(sequences_3)
+# # Compute pairwise distances
+# matrix_3 = alignment.compute_pairwise_distances()
+#
+# # Set the precision for printing NumPy arrays
+# np.set_printoptions(precision=2)
+# # Print the distance matrix
+# alignment.print_distance_matrix(matrix_3)
+# print()
+#
+# # Check if the matrix is ultrametric
+# is_ultrametric = PolyTree.test_ultrametricity(matrix_3)
+# print(str(is_ultrametric))
+# print()
+#
+# nj = PolyTree.NeighborJoining(matrix_3, label_3)
+# tree = nj.build_tree()
+# nj.print_tree()
+#
+# display = TreeDisplay.TreeDisplay(tree)
+# display.visualize()
