@@ -3,7 +3,7 @@ from Bio import Align
 
 # This class calculates the optimal alignment score for some sequences using the Needleman-Wunsch algorithm.
 class Score:
-    def __init__(self, sequences, match_score=1, gap_penalty=-2, mismatch_penalty=-1):
+    def __init__(self, sequences, match_score=0.0001, gap_penalty=-0.0002, mismatch_penalty=-0.0001):
         self.sequences = sequences
         self.match_score = match_score
         self.gap_penalty = gap_penalty
@@ -49,13 +49,14 @@ class Score:
                 print("getting alignment_score")
                 alignments = self.aligner.align(self.sequences[i], self.sequences[j])
                 alignment_score = alignments[0].score
+                #print(f"{self.sequences[i]} {self.sequences[j]} alignment score: {alignment_score}")
                 # alignment_score = self.needleman_wunsch(self.sequences[i], self.sequences[j])
                 # This part of algorithm is . there are several ways to calculate distance.
                 # Scaled Distance Formula used here. 0 means two sequent are very close
                 # This formula asures that distance never get infinit or negetive value,always between 0 to 1
-                max_value = np.log(np.finfo(np.float64).max) - 1
-                alignment_score = np.clip(alignment_score, -max_value, max_value)
                 distance = 1 / (1 + np.exp(alignment_score))
+                print("final distance:", distance)
+                # print()
                 distance_matrix[i][j] = distance
                 distance_matrix[j][i] = distance
 
