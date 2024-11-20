@@ -48,25 +48,26 @@ class DashView:
         self.seq = Text(self.frame_left,fg="gray", wrap=WORD, width=37, height=10)
         self.scroll_text.config(command=self.seq.yview)
         self.scroll_text.pack(side=RIGHT, fill=Y)
-        self.placeholder = "Enter sequences in any of following format:\n1. Name and sequence seperately.\n2. FASTA formate: e.g.\n>name\nsequence\n"
-        self.seq.insert(END, self.placeholder)
         self.seq.pack(side=TOP, fill="x", padx=20, pady=5)
         
         # Buttons
-        self.button_add = Button(self.frame_option, text="Add", font="arial 12 bold", width=8)
-        self.button_add.pack(side=LEFT, padx=10)
+        self.button_add = Button(self.frame_option, text="Add", font="arial 12 bold", width=6)
+        self.button_add.pack(side=LEFT, padx=8)
               
-        self.button_browse = Button(self.frame_option, text="Browse", font="arial 12 bold", width=8)
-        self.button_browse.pack(side=LEFT, padx=10)  
+        self.button_browse = Button(self.frame_option, text="Browse", font="arial 12 bold", width=6)
+        self.button_browse.pack(side=LEFT, padx=8)  
         
-        self.button_clear = Button(self.frame_option, text="Clear", font="arial 12 bold", width=8)
-        self.button_clear.pack(side=LEFT, padx=10)
+        self.button_update = Button(self.frame_option, text="Update", font="arial 12 bold", width=6)
+        self.button_update.pack(side=LEFT, padx=8)
         
-        self.button_delete = Button(self.frame_option, text="Delete", font="arial 12 bold",width=8)
-        self.button_delete.pack(side=LEFT, padx=10)
+        self.button_clear = Button(self.frame_option, text="Clear", font="arial 12 bold", width=6)
+        self.button_clear.pack(side=LEFT, padx=8)
+
+        self.button_delete = Button(self.frame_option, text="Delete", font="arial 12 bold",width=6)
+        self.button_delete.pack(side=LEFT, padx=8)
         
-        self.button_empty = Button(self.frame_option, text="Empty list", font="arial 12 bold",width=8)
-        self.button_empty.pack(side=LEFT, padx=10)
+        self.button_empty = Button(self.frame_option, text="Empty", font="arial 12 bold",width=6)
+        self.button_empty.pack(side=LEFT, padx=8)
         
         # Create a Listbox 
         Label(self.frame_right, text='List:', font='arial 12 bold', anchor="w").pack(side=TOP, fill="y", padx=10, anchor="w")
@@ -86,41 +87,41 @@ class DashView:
 
         
 class PlotView:
-    def __init__(self, root,model, tree_type):
+    def __init__(self, model, tree_type):
         self.model = model
         # Create a new window
-        self.plot_window = Toplevel(root)
+        self.plot_window = Toplevel(None)
         self.plot_window.title(f"{tree_type} Tree Plot")
         self.plot_window.geometry("600x550")
         self.plot_window.minsize(600, 550)
         self.plot_window.resizable(True, True)
         
         # Top frame for plot display title
-        self.frame_top = Frame(self.plot_window, padx=10, pady=10)
+        self.frame_top = Frame(self.plot_window, padx=5, pady=5)
         self.frame_top.pack(side="top", fill="x")
         
         # Title Label in the top frame
-        self.plot_label = Label(self.frame_top, text=f"{tree_type} Plot", font="arial 14", anchor="center")
+        self.plot_label = Label(self.frame_top, text=f"{tree_type} Plot", font="arial 12", anchor="center")
         self.plot_label.pack(side="top",fill="x", expand=True)
         
         # Middle frame for displaying the plot
-        self.frame_middle = Frame(self.plot_window, padx=10, pady=10)
+        self.frame_middle = Frame(self.plot_window, padx=5, pady=5)
         self.frame_middle.pack(side="top", fill="both", expand=True)
         
 ###-------------------------------------------------------------------------------------------------
 ###Here is the part help to plot the image of tree, use bio lab to make an image then pass it here
         # Save Plotly figure to an image file
         #Load and display the image (replace with the actual path of the image)
-        try:
-            img = Image.open(self.model.img_path)  # Replace with actual image path
-            img = img.resize((400, 400), Image.Resampling.LANCZOS)
-            img_tk = ImageTk.PhotoImage(img)
+        # try:
+        #     img = Image.open(self.model.img_path)  # Replace with actual image path
+        #     img = img.resize((400, 400), Image.Resampling.LANCZOS)
+        #     img_tk = ImageTk.PhotoImage(img)
 
-            image_label = Label(self.frame_middle, image=img_tk)
-            image_label.image = img_tk  # Keep reference to prevent garbage collection
-            image_label.pack(fill="both", expand=True)
-        except Exception as e:
-            messagebox.showerror("Image Error", f"Could not load image: {e}")
+        #     image_label = Label(self.frame_middle, image=img_tk)
+        #     image_label.image = img_tk  # Keep reference to prevent garbage collection
+        #     image_label.pack(fill="both", expand=True)
+        # except Exception as e:
+        #     messagebox.showerror("Image Error", f"Could not load image: {e}")
 ###-------------------------------------------------------------------------------------------------
        
         # # Bottom frame for information display
@@ -133,5 +134,3 @@ class PlotView:
         self.scroll_info.config(command=self.info_text.yview)
         self.scroll_info.pack(side=LEFT, fill=Y) 
         self.info_text.pack(fill="both", expand=True)
-        self.info_text.insert(END, self.model.info)
-        

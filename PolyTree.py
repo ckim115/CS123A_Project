@@ -18,8 +18,8 @@ def test_ultrametricity(distance_matrix):
                 if not ((d_ij <= (d_ik+d_jk)) and 
                         (d_ik <= (d_ij+d_jk)) and 
                         (d_jk <= (d_ij+d_ik))):
-                    return "Tree is non ultrametric"
-    return "tree is ultrametric"
+                    return False
+    return True
 #-----------------------------------------------------------------------
 class WPGMA:
     def __init__(self, distance_matrix, labels):

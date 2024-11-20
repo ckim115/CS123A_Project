@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
+import tkinter as tk
+from tkinter import ttk
 
 import numpy as np
 import pandas as pd
@@ -20,7 +22,9 @@ class DashController:
         self.seq_list = []
            
         self.plot_controller = None
-        self.text_info = self.view.seq
+        
+        self.placeholder = "Enter sequences in following formats:\n\n1.Name and sequence seperately.\n\n2.FASTA formate: e.g.\n  >Name\n  Sequence\n"
+        self.view.seq.insert(END, self.placeholder)
         self.view.seq.config(state="disable") 
          
         # Bind the Listbox click event to the view method
@@ -28,6 +32,7 @@ class DashController:
         
         self.view.button_add.config(command=self.add_item)
         self.view.button_browse.config(command=self.browse_item)
+        self.view.button_update.config(command=self.update_item)
         self.view.button_clear.config(command=self.clear_item)
         self.view.button_delete.config(command=self.delete_item)
         self.view.button_empty.config(command=self.clear_all_items)
@@ -38,28 +43,27 @@ class DashController:
         self.view.seq.bind("<FocusIn>", self.on_click)
         self.view.seq.bind("<FocusOut>", self.on_focus_out)
         
-    def on_click(self,event):
-        if self.view.seq.get("1.0", "end-1c") == self.view.placeholder:
+    def on_click(self,event=None):
+        if self.view.seq.get("1.0", "end-1c") == self.placeholder:
             self.view.seq.config(state="normal")
             self.view.seq.delete("1.0", "end")
             self.view.seq.config(fg="black")
   
-    def on_focus_out(self,event):
+    def on_focus_out(self,event=None):
         if self.view.seq.get("1.0", "end-1c") == "":
-            self.view.seq.insert("1.0", self.view.placeholder)
+            self.view.seq.insert("1.0", self.placeholder)
             self.view.seq.config(fg="gray")
-            self.view.seq.config(state="normal")  
+            self.view.seq.config(state="disabled")
             
     # Method to clear all items from Listbox and datas list
-    def clear_all_items(self):
+    def clear_all_items(self,event=None):
         self.seq_list.clear()  # Clear the datas list
         self.view.select.delete(0, END)  # Clear all items in the Listbox    
                
-    def add_item(self):
+    def add_item(self,event=None):
         # Retrieve values from entry and text widgets
-        name_value = self.view.name.get().strip().replace(":", "")
-        seq_value = self.view.seq.get(1.0, "end-1c").strip().replace(":", "")
-        
+        name_value = self.view.name.get().strip()
+        seq_value = self.view.seq.get(1.0, "end-1c").strip()
         # Check if the name or sequence exceeds the allowed length
         if len(name_value) > self.model.MAX_NAME_LENGTH:
             messagebox.showwarning("Name Length Exceeded", 
@@ -77,15 +81,6 @@ class DashController:
             messagebox.showwarning("Sequence is empty", 
                                 f"The sequence is not provided.")
             return
-
-        # Check if the sequence is valid
-        if not self.validate_sequence(seq_value):
-            messagebox.showwarning("Invalid Sequence", 
-                                "Invalid input! Sequences should only contain letters and follow the format:\n"
-                                "1. '>name' followed by a sequence on the next line e.g., >name\nsequence\n"
-                                "2. Just the sequence without special characters or numbers.")
-            return
-
         # Check if the sequence starts with '>' (Name included) or not (only sequence)
         if seq_value.startswith(">"):
             # Process the input sequence to extract name and sequence
@@ -93,23 +88,33 @@ class DashController:
             if parsed_sequences:
                 for name_seq_pair in parsed_sequences:
                     self.seq_list.append(name_seq_pair)
-                self.update_list()
-                self.clear_item()  # Reset fields using the correct clear() function
+                self.update_list(event=None)
+                self.clear_item(event=None)  # Reset fields using the correct clear() function
             else:
                 messagebox.showwarning("Input Error", "No valid sequences found in the input.")
         elif name_value == '':
             # If sequence is entered without a name (and not starting with '>'), show error
             messagebox.showwarning("Input Error", "Please provide input in FASTA format '>name' following by sequence on a new line or name and sequence seperately.")
+                
+        # Check if the sequence is valid
+        elif not self.validate_sequence(seq_value):
+            messagebox.showwarning("Invalid Sequence", 
+                                  "Invalid input! Please follow this format:\n"
+                                  "   1. FASTA format e.g.:\n"
+                                  "      >Name\nSequence\n"
+                                  "   2. Name and sequence seperatly without special characters or numbers.")
         else:
             # If both name and sequence are filled, add them to the list
             self.seq_list.append([name_value, seq_value])
-            self.update_list()
-            self.clear_item()
+            self.update_list(event=None)
+            self.clear_item(event=None)
+        return self.seq_list
+       
     # Validate Sequence Format (Ensures only letters and newlines)
     def validate_sequence(self,seq_value):
         # Ensure the sequence contains only valid characters (letters, newlines, or '>')
-        return all(c.isalpha() or c == '\n' or c == '>' or c == "_" or c == "-" or c == " " for c in seq_value)
-
+        return all(c.isalpha() or c == '\n' or c == '>' or c==" "for c in seq_value)
+       
     # Parse Sequences (Handles splitting multiple sequences)
     def parse_sequences(self,seq_value):
         sequences = []
@@ -137,25 +142,26 @@ class DashController:
         return sequences
 
     # Open File Dialog to Load .txt File
-    def browse_item(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
+    def browse_item(self,event=None):
+        file_path = filedialog.askopenfilename(
+        filetypes=[("Text and Fasta Files", "*.txt *.fasta"), ("Text Files", "*.txt"), ("Fasta Files", "*.fasta")])
         if file_path:
             try:
-                with open(file_path, 'r') as file:
+                with open(file_path, 'r', encoding='utf-8') as file:
                     self.view.seq.config(state="normal")
-                    self.view.seq.config(fg="black")
                     content = file.read().strip()
+                    self.view.seq.config(fg="black")
                     self.view.seq.delete(1.0, "end")  # Clear the text area before inserting the content
                     self.view.seq.insert(1.0, content)  # Insert the content of the file
-                    
             except Exception as e:
+                print(f"Error: {e}")
                 messagebox.showerror("Error", f"Failed to load the file: {e}")
 
     # Update Listbox
-    def update_list(self):
+    def update_list(self,event=None):
         # Clear the listbox
         self.view.select.delete(0, END)
-        # Insert each name in datas into the listbox
+        # Insert each name in list into the listbox
         for item in self.seq_list:
             self.view.select.insert(END, item[0])
 
@@ -164,51 +170,76 @@ class DashController:
         selected_index = self.view.select.curselection()
         if selected_index:
             index = int(selected_index[0])
-            self.view.name.set(self.seq_list[index][0])
+            # Enable the text widget
+            self.view.seq.config(state="normal")
+            # Clear and insert new text
             self.view.seq.delete(1.0, "end")
             self.view.seq.insert(1.0, self.seq_list[index][1])
+            # Set text attributes and disable the widget
+            self.view.seq.config(fg="black")
+            # Update the entry field with the name
+            self.view.name.set(self.seq_list[index][0])
+
+    def update_item(self, event=None):
+        selected_index = self.view.select.curselection()
+        if selected_index:
+            index = int(selected_index[0])
+            # Get the new sequence from the text box
+            new_seq = self.view.seq.get(1.0, "end-1c").strip()
+            # Get the new name from the name entry widget
+            new_name = self.view.name.get().strip()
+            
+            # Check if the sequence has changed
+            if new_seq != self.seq_list[index][1]:
+                # Update the sequence in the seq_list
+                self.seq_list[index][1] = new_seq
+                messagebox.showinfo("Sequence Updated", "The sequence has been updated successfully.")
+
+            # Check if the name has changed
+            if new_name != self.seq_list[index][0]:
+                # Update the name in the seq_list
+                self.seq_list[index][0] = new_name
+                messagebox.showinfo("Name Updated", "The name has been updated successfully.")        
+            self.update_list(event=None)
 
     # Delete Information
-    def delete_item(self):
+    def delete_item(self,event=None):
         selected_index = self.view.select.curselection()
         if selected_index:
             index = int(selected_index[0])
             del self.seq_list[index]
-            self.update_list()
-            self.clear_item()
+            self.update_list(event=None)
+            self.clear_item(event=None)
 
     # Reset Fields
-    def clear_item(self):
+    def clear_item(self,event=None):
         self.view.name.set('')
         self.view.seq.delete(1.0, "end")
+        self.on_focus_out(event=None)
 
-    # Check if there are at least 2 sequences in datas
+
+    # Check if there are at least two sequences in datas
     def check_minimum_sequences(self):
         if len(self.seq_list) < 2:
-            messagebox.showwarning("Insufficient Data", "Please enter at least 2 sequences to plot the tree.")
+            messagebox.showwarning("Insufficient Data", "Please enter at least two sequences to plot the tree.")
             return False
         return True
             
     def plot_if_possible(self,tree_type):
         if self.check_minimum_sequences():
             self.model.seq_list = self.seq_list
-            self.plot_controller = PlotController(self.view.root,self.model,tree_type)
-        else:
-            messagebox.showwarning("Insufficient Data", "Please enter at least 2 sequences to plot the tree.")  
-        return FALSE                
+            self.plot_controller = PlotController(self.model,tree_type)
+        return False               
             
-class PlotController:
-    def __init__(self,root, model,tree_type):
+class PlotController():
+    def __init__(self,model,tree_type):
         self.model = model
-        self.root = root
-
-        print(tree_type)
-        self.create_tree(tree_type)
-
+        self.view = None  # Initialize view as None first
         from View import PlotView
-        self.model.view = PlotView(root,self.model,tree_type)
-        self.model.view.info_text.config(state="disabled",)
-
+        self.view = PlotView(model,tree_type)
+        
+        self.create_tree(tree_type)
+    
     def create_tree(self, tree_type):
         df = pd.DataFrame(self.model.seq_list)
         labels = df[0].to_numpy()
@@ -221,21 +252,29 @@ class PlotController:
         np.set_printoptions(precision=2)
         # Print the distance matrix
         alignment.print_distance_matrix(matrix)
-        print()
 
         # Check if the matrix is ultrametric
-        is_ultrametric = PolyTree.test_ultrametricity(matrix)
-        print(str(is_ultrametric))
-        print()
-
-        if tree_type == "Neighbor Joining":
-            nj = PolyTree.NeighborJoining(matrix, labels)
+        if PolyTree.test_ultrametricity(matrix):
+            self.view.info_text.insert("end","Tree is ultrametric\n")
         else:
-            nj = PolyTree.WPGMA(matrix, labels)
-        tree = nj.build_tree()
-        nj.print_tree()
+            self.view.info_text.insert("end","Tree is non ultrametric\n")
+        if tree_type == "Neighbor Joining":
+            tree = PolyTree.NeighborJoining(matrix, labels)
+            tree.build_tree()
+            tree.print_tree()
+            self.view.info_text.insert("end", tree.tree_info())
+        else:
+            tree = PolyTree.WPGMA(matrix, labels)
+            tree.build_tree()
+            tree.print_tree()
+            self.view.info_text.insert("end", tree.tree_info())
+        
+        
+        print(self.view.info_text.get("1.0", "end-1c"))
 
-        display = TreeDisplay.TreeDisplay(tree)
-        display.visualize()
 
         
+
+
+
+    

@@ -1,15 +1,12 @@
 import numpy as np
 from Bio import Align
-
 # This class calculates the optimal alignment score for some sequences using the Needleman-Wunsch algorithm.
 class Score:
     def __init__(self, sequences, match_score=0.0001, gap_penalty=-0.0002, mismatch_penalty=-0.0001):
         self.sequences = sequences
-        self.match_score = match_score
-        self.gap_penalty = gap_penalty
-        self.mismatch_penalty = mismatch_penalty
-
         self.aligner = Align.PairwiseAligner() # aligner for two sequences
+
+        
         self.aligner.match_score = match_score
         self.aligner.mismatch_score = mismatch_penalty
         self.aligner.open_gap_score = gap_penalty
@@ -17,35 +14,37 @@ class Score:
         self.aligner.target_end_gap_score = 0.0
         self.aligner.query_end_gap_score = 0.0
 
-    def needleman_wunsch(self, seq1, seq2):
-        len1, len2 = len(seq1), len(seq2)
-        score_matrix = np.zeros((len1 + 1, len2 + 1))
-
-        # Initialize the scoring matrix with gap penalties
-        for i in range(1, len1 + 1):
-            score_matrix[i][0] = i * self.gap_penalty
-        for j in range(1, len2 + 1):
-            score_matrix[0][j] = j * self.gap_penalty
-
-        # Fill in the score matrix
-        for i in range(1, len1 + 1):
-            for j in range(1, len2 + 1):
-                match = score_matrix[i - 1][j - 1] + (self.match_score if seq1[i - 1] == seq2[j - 1] else self.mismatch_penalty)
-                delete = score_matrix[i - 1][j] + self.gap_penalty
-                insert = score_matrix[i][j - 1] + self.gap_penalty
-                score_matrix[i][j] = max(match, delete, insert)
-
-        return score_matrix[len1][len2]
     
     # This function calculates the optimal alignment score for two sequences using the Needleman-Wunsch algorithm.
     def compute_pairwise_distances(self):
         print("beginning pairwise alignment")
         num_sequences = len(self.sequences)
         distance_matrix = np.zeros((num_sequences, num_sequences))
-
+        # (t,n,p variable) This part is informative and only shows
+        # % progress of calculation. t is total numbel of alignment
+        # n is number of alignment done and p is the percent of pregress.
+        t = 0.5*num_sequences*num_sequences-1
+        n = 0
         # Calculate pairwise distances
         for i in range(num_sequences):
             for j in range(i + 1, num_sequences):
+                n += 1  # Increment progress counter
+                p = (n / t) * 100  # Calculate percentage
+                print(f"Progress: {p:.2f}%")
+                
+                score = self.aligner.score(self.sequences[i], self.sequences[j])
+    
+                # This part of algorithm is important. there are several ways to calculate distance.
+                # Scaled Distance Formula used here. 0 means two sequent are very close vast versa
+                # This formula assures that distance never get infinit or negetive value,always between 0 to 1
+                # Handle score = 0 to avoid log(0) and devision by 0
+                if score == 0:
+                    #the alignment score is zero, which could be due to no similarity between two sequences.
+                    distance = 1.0  # Maximum distance for no similarity
+                else:
+                    max_value = np.log(score) - 1
+                    score = np.clip(score, -max_value, max_value)
+                    distance = 1 / (1 + np.exp(score))
                 print("getting alignment_score")
                 alignments = self.aligner.align(self.sequences[i], self.sequences[j])
                 alignment_score = alignments[0].score
@@ -57,6 +56,7 @@ class Score:
                 distance = 1 / (1 + np.exp(alignment_score))
                 print("final distance:", distance)
                 # print()
+
                 distance_matrix[i][j] = distance
                 distance_matrix[j][i] = distance
 
