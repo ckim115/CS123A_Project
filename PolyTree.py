@@ -88,15 +88,12 @@ class WPGMA:
         return self.cur_tree
 
     def print_tree(self):
-        print("WPGMA Tree (Cluster, Distance):")
-        for key, val in self.tree.items():
-            print(f"{key} : {val:.2f}")
+        longest_cluster = max(self.tree.keys(), key=len)
+        return "WPGMA Tree\n"+longest_cluster 
     
     def tree_info(self):
-        tree_details = "WPGMA Tree (Cluster, Distance):\n"
-        for key, val in self.tree.items():
-            tree_details += f"{key} : {val:.2f}\n"
-        return tree_details      
+        longest_cluster = max(self.tree.keys(), key=len)
+        return longest_cluster     
             
 #----------------------------------------------------------------------------------
 class NeighborJoining:
@@ -188,12 +185,9 @@ class NeighborJoining:
         return self.tree[-1]
 
     def print_tree(self):
-        print("Neighbor-Joining Tree:")
-        for node in self.tree:
-            print(node)
+        longest_text = max(self.tree, key=len)
+        return  "Neighbor-Joining Tree:\n"+longest_text
             
     def tree_info(self):
-        tree_details = "Neighbor-Joining Tree:\n"
-        for node in self.tree:
-            tree_details += f"{node}\n"
-        return tree_details
+        longest_text = max(self.tree, key=len)
+        return  longest_text

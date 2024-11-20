@@ -5,9 +5,8 @@ import matplotlib.pyplot as plt
 class TreeDisplay:
     def __init__(self, tree):
         self.tree = tree
-
     def visualize(self):
         tree_display = Phylo.read(StringIO(self.tree), "newick")
-        print(tree_display)
+        plt.figure(figsize=(15, 10))
         Phylo.draw(tree_display, branch_labels=lambda c: c.branch_length, do_show=False)
         plt.savefig('tree.png')

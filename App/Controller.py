@@ -4,6 +4,7 @@ from tkinter import filedialog
 import tkinter as tk
 from tkinter import ttk
 
+from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -229,6 +230,7 @@ class DashController:
         if self.check_minimum_sequences():
             self.model.seq_list = self.seq_list
             self.plot_controller = PlotController(self.model,tree_type)
+            return True
         return False               
             
 class PlotController():
@@ -250,27 +252,29 @@ class PlotController():
 
         # Set the precision for printing NumPy arrays
         np.set_printoptions(precision=2)
-        # Print the distance matrix
-        alignment.print_distance_matrix(matrix)
 
-        # Check if the matrix is ultrametric
-        if PolyTree.test_ultrametricity(matrix):
-            self.view.info_text.insert("end","Tree is ultrametric\n")
-        else:
-            self.view.info_text.insert("end","Tree is non ultrametric\n")
+        #draw the tree user selected      
         if tree_type == "Neighbor Joining":
             tree = PolyTree.NeighborJoining(matrix, labels)
-            tree.build_tree()
-            tree.print_tree()
-            self.view.info_text.insert("end", tree.tree_info())
         else:
             tree = PolyTree.WPGMA(matrix, labels)
-            tree.build_tree()
-            tree.print_tree()
-            self.view.info_text.insert("end", tree.tree_info())
+        tree.build_tree()
+        plot = tree.tree_info()
+        self.view.info_text.insert("end", tree.print_tree())
+
+        #Check if the distance matrix is ultrametric nor not
+        distance_matrix= alignment.print_distance_matrix(matrix)
+        if PolyTree.test_ultrametricity(matrix):
+            self.view.info_text.insert("end","\n\nDistance matrix is ultrametric, suited for WPGMA algorithm\n")
+        else:
+            self.view.info_text.insert("end","\n\nDistance matrix is non ultrametric, suited for NJ algorithm\n")
+        # Print the distance matrix
+        self.view.info_text.insert("end",distance_matrix)
+
+        display = TreeDisplay.TreeDisplay(plot)
+        display.visualize()
         
-        
-        print(self.view.info_text.get("1.0", "end-1c"))
+
 
 
         

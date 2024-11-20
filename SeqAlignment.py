@@ -1,11 +1,11 @@
+import io
 import numpy as np
 from Bio import Align
 # This class calculates the optimal alignment score for some sequences using the Needleman-Wunsch algorithm.
 class Score:
-    def __init__(self, sequences, match_score=0.0001, gap_penalty=-0.0002, mismatch_penalty=-0.0001):
+    def __init__(self, sequences, match_score=0.001, gap_penalty=-0.002, mismatch_penalty=-0.001):
         self.sequences = sequences
         self.aligner = Align.PairwiseAligner() # aligner for two sequences
-
         
         self.aligner.match_score = match_score
         self.aligner.mismatch_score = mismatch_penalty
@@ -23,11 +23,12 @@ class Score:
         # (t,n,p variable) This part is informative and only shows
         # % progress of calculation. t is total numbel of alignment
         # n is number of alignment done and p is the percent of pregress.
-        t = 0.5*num_sequences*num_sequences-1
+        t = 0.5*num_sequences*(num_sequences-1)
         n = 0
         # Calculate pairwise distances
         for i in range(num_sequences):
             for j in range(i + 1, num_sequences):
+                
                 n += 1  # Increment progress counter
                 p = (n / t) * 100  # Calculate percentage
                 print(f"Progress: {p:.2f}%")
@@ -45,28 +46,21 @@ class Score:
                     max_value = np.log(score) - 1
                     score = np.clip(score, -max_value, max_value)
                     distance = 1 / (1 + np.exp(score))
-                print("getting alignment_score")
-                alignments = self.aligner.align(self.sequences[i], self.sequences[j])
-                alignment_score = alignments[0].score
-                #print(f"{self.sequences[i]} {self.sequences[j]} alignment score: {alignment_score}")
-                # alignment_score = self.needleman_wunsch(self.sequences[i], self.sequences[j])
-                # This part of algorithm is . there are several ways to calculate distance.
-                # Scaled Distance Formula used here. 0 means two sequent are very close
-                # This formula asures that distance never get infinit or negetive value,always between 0 to 1
-                distance = 1 / (1 + np.exp(alignment_score))
-                print("final distance:", distance)
-                # print()
-
                 distance_matrix[i][j] = distance
                 distance_matrix[j][i] = distance
 
         return distance_matrix
     
     def print_distance_matrix(self, distance_matrix):
+        # Create a memory buffer to capture the output
+        output_buffer = io.StringIO()
         labels = [f"Seq{i+1}" for i in range(len(self.sequences))]
-        print("Pairwise Distance Matrix:")
-        print("      " + "  ".join(f"{label:>6}" for label in labels))
+        # Capture the pairwise distance matrix header and rows into the buffer
+        output_buffer.write("Pairwise Distance Matrix:\n")
+        output_buffer.write("      " + "  ".join(f"{label:>6}" for label in labels) + "\n")
         for i, label in enumerate(labels):
             row = "  ".join(f"{distance_matrix[i][j]:6.2f}" for j in range(len(labels)))
-            print(f"{label}  {row}")
+            output_buffer.write(f"{label}  {row}\n")
+        return output_buffer.getvalue()
+    
             

@@ -93,7 +93,7 @@ class PlotView:
         self.plot_window = Toplevel(None)
         self.plot_window.title(f"{tree_type} Tree Plot")
         self.plot_window.geometry("600x550")
-        self.plot_window.minsize(600, 550)
+        self.plot_window.minsize(600, 575)
         self.plot_window.resizable(True, True)
         
         # Top frame for plot display title
@@ -112,16 +112,11 @@ class PlotView:
 ###Here is the part help to plot the image of tree, use bio lab to make an image then pass it here
         # Save Plotly figure to an image file
         #Load and display the image (replace with the actual path of the image)
-        # try:
-        #     img = Image.open(self.model.img_path)  # Replace with actual image path
-        #     img = img.resize((400, 400), Image.Resampling.LANCZOS)
-        #     img_tk = ImageTk.PhotoImage(img)
-
-        #     image_label = Label(self.frame_middle, image=img_tk)
-        #     image_label.image = img_tk  # Keep reference to prevent garbage collection
-        #     image_label.pack(fill="both", expand=True)
-        # except Exception as e:
-        #     messagebox.showerror("Image Error", f"Could not load image: {e}")
+        
+        img_path = "tree.png"
+        newImg = showImg(self.frame_middle)
+        newImg.update_image(img_path)
+        
 ###-------------------------------------------------------------------------------------------------
        
         # # Bottom frame for information display
@@ -134,3 +129,19 @@ class PlotView:
         self.scroll_info.config(command=self.info_text.yview)
         self.scroll_info.pack(side=LEFT, fill=Y) 
         self.info_text.pack(fill="both", expand=True)
+
+class showImg:
+    def __init__(self, frame_middle):
+        self.frame_middle = frame_middle
+        self.image_label = None  # Keep reference to the label
+
+    def update_image(self, img_path):
+        # Open and resize the new image
+        img = Image.open(img_path)
+        img = img.resize((600, 400), Image.Resampling.LANCZOS)
+        img_tk = ImageTk.PhotoImage(img)
+
+        # Create a new label with the updated image
+        self.image_label = Label(self.frame_middle, image=img_tk)
+        self.image_label.image = img_tk  # Keep reference to prevent garbage collection
+        self.image_label.pack(fill="both", expand=True)
