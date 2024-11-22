@@ -84,11 +84,12 @@ class DashView:
 
         self.button_nj = Button(self.frame_bottom, text="Neighbor Joining", font="arial 12 bold", width=12)
         self.button_nj.pack(side=LEFT, padx=5, fill="both", expand=True)
-
-        
+#-------------------------------------------------------------------------           
 class PlotView:
     def __init__(self, model, tree_type):
         self.model = model
+        self.image_label = None  # Keep reference to the label
+        
         # Create a new window
         self.plot_window = Toplevel(None)
         self.plot_window.title(f"{tree_type} Tree Plot")
@@ -102,25 +103,14 @@ class PlotView:
         
         # Title Label in the top frame
         self.plot_label = Label(self.frame_top, text=f"{tree_type} Plot", font="arial 12", anchor="center")
-        self.plot_label.pack(side="top",fill="x", expand=True)
+        self.plot_label.pack(side="top", fill="x", expand=True)
         
         # Middle frame for displaying the plot
         self.frame_middle = Frame(self.plot_window, padx=5, pady=5)
         self.frame_middle.pack(side="top", fill="both", expand=True)
         
-###-------------------------------------------------------------------------------------------------
-###Here is the part help to plot the image of tree, use bio lab to make an image then pass it here
-        # Save Plotly figure to an image file
-        #Load and display the image (replace with the actual path of the image)
-        
-        img_path = "tree.png"
-        newImg = showImg(self.frame_middle)
-        newImg.update_image(img_path)
-        
-###-------------------------------------------------------------------------------------------------
-       
-        # # Bottom frame for information display
-        self.frame_bottom = Frame(self.plot_window,padx=10, pady=10)
+        # Bottom frame for information display
+        self.frame_bottom = Frame(self.plot_window, padx=10, pady=10)
         self.frame_bottom.pack(side="top", fill="both", expand=True)
         
         # Text box for showing information
@@ -130,18 +120,14 @@ class PlotView:
         self.scroll_info.pack(side=LEFT, fill=Y) 
         self.info_text.pack(fill="both", expand=True)
 
-class showImg:
-    def __init__(self, frame_middle):
-        self.frame_middle = frame_middle
-        self.image_label = None  # Keep reference to the label
-
-    def update_image(self, img_path):
+    def initialize_image(self, img_path):
         # Open and resize the new image
         img = Image.open(img_path)
         img = img.resize((600, 400), Image.Resampling.LANCZOS)
         img_tk = ImageTk.PhotoImage(img)
-
+        
         # Create a new label with the updated image
         self.image_label = Label(self.frame_middle, image=img_tk)
         self.image_label.image = img_tk  # Keep reference to prevent garbage collection
         self.image_label.pack(fill="both", expand=True)
+   

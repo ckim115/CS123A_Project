@@ -232,16 +232,24 @@ class DashController:
             self.plot_controller = PlotController(self.model,tree_type)
             return True
         return False               
-            
-class PlotController():
-    def __init__(self,model,tree_type):
+#-------------------------------------------------------------------------           
+class PlotController:
+    def __init__(self, model, tree_type):
         self.model = model
         self.view = None  # Initialize view as None first
-        from View import PlotView
-        self.view = PlotView(model,tree_type)
         
+        from View import PlotView
+        self.view = PlotView(model, tree_type)
         self.create_tree(tree_type)
+        
+        # Now, call the showImg function to display the image
+        self.showImg(self.model.img_path)
+
+    def showImg(self, img_path):
+        # Call the view's method to initialize and show the image
+        self.view.initialize_image(img_path)
     
+       
     def create_tree(self, tree_type):
         df = pd.DataFrame(self.model.seq_list)
         labels = df[0].to_numpy()
