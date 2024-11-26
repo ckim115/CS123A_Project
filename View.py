@@ -6,50 +6,62 @@ from matplotlib import figure
 class DashView:
     def __init__(self, root):
         self.root = root
+        root.config(bg="dark gray")
         self.root.title("Phylogenetic Tree Plotter")
-        self.root.geometry('600x450')
-        self.root.minsize(600, 450)
-        self.root.maxsize(600, 450)
+        self.root.geometry('600x475')
+        self.root.minsize(600, 475)
+        self.root.maxsize(600, 475)
         self.datas = []
         
         # Frames
         self.frame_top = Frame(root)
         self.frame_top.pack(side="top", fill="both", expand=False,pady=10)
+        self.frame_top.config(bg="dark gray")
         
         self.frame_center = Frame(root)
         self.frame_center.pack(side="top", fill="both", expand=False)
+        self.frame_center.config(bg="dark gray")
         
         self.frame_left = Frame(self.frame_center)
         self.frame_left.pack(side="left", fill="x", expand=True, pady=10, padx=10)
+        self.frame_left.config(bg="dark gray")
         
         self.frame_right = Frame(self.frame_center)
         self.frame_right.pack(side="right", fill="both", expand=True, pady=10, padx=10)
+        self.frame_right.config(bg="dark gray")
         
         self.frame_option = Frame(root)
         self.frame_option.pack(side="top", fill="none", expand=False, padx=20)
+        self.frame_option.config(bg="dark gray")
         
         self.frame_bottom = Frame(root)
         self.frame_bottom.pack(side="top", fill="x", expand=False, pady=30,padx=20)
-
+        self.frame_bottom.config(bg="dark gray")
+        
+        self.frame_copyright = Frame(root)
+        self.frame_copyright.pack(side="bottom", fill="none", expand=True, pady=2)
+        self.frame_copyright.config(bg="dark gray")
+        
+        
         # GUI Components
-        self.title = Label(self.frame_top, text='Phylogenetic Tree Plotter', font='arial 20 bold')
+        self.title = Label(self.frame_top, text='Phylogenetic Tree Plotter', bg="dark gray", font='arial 20 bold')
         self.title.pack(side=TOP, anchor="center")
 
         # Entry Fields
         self.name = StringVar()
         self.txt = StringVar()
         
-        Label(self.frame_left, text='Name:', font='arial 12 bold', anchor="w").pack(side=TOP, fill="x", padx=20, anchor="w")
+        Label(self.frame_left, text='Name:', font='arial 12 bold', bg="dark gray", anchor="w").pack(side=TOP, fill="x", padx=20, anchor="w")
         self.name_entry = Entry(self.frame_left, textvariable=self.name, width=50)
         self.name_entry.pack(side=TOP, fill="x", padx=20, pady=5)
-        
-        Label(self.frame_left, text='Sequence(s):', font='arial 12 bold', anchor="w").pack(side=TOP, fill="x", padx=20, anchor="w")
+
+        Label(self.frame_left, text='Sequence(s):', font='arial 12 bold', bg="dark gray", anchor="w").pack(side=TOP, fill="x", padx=20, anchor="w")
         self.scroll_text = Scrollbar(self.frame_left, orient=VERTICAL, width=20)  # Set scrollbar width
-        self.seq = Text(self.frame_left,fg="gray", wrap=WORD, width=37, height=10)
+        self.seq = Text(self.frame_left,fg="gray", wrap=WORD, relief="sunken", width=37, height=10)
         self.scroll_text.config(command=self.seq.yview)
         self.scroll_text.pack(side=RIGHT, fill=Y)
         self.seq.pack(side=TOP, fill="x", padx=20, pady=5)
-        
+
         # Buttons
         self.button_add = Button(self.frame_option, text="Add", font="arial 12 bold", width=6)
         self.button_add.pack(side=LEFT, padx=8)
@@ -70,13 +82,12 @@ class DashView:
         self.button_empty.pack(side=LEFT, padx=8)
         
         # Create a Listbox 
-        Label(self.frame_right, text='List:', font='arial 12 bold', anchor="w").pack(side=TOP, fill="y", padx=10, anchor="w")
+        Label(self.frame_right, text='List:', font='arial 12 bold', bg="dark gray", anchor="w").pack(side=TOP, fill="y", padx=10, anchor="w")
         self.scroll_bar = Scrollbar(self.frame_right, orient=VERTICAL, width=20) 
         self.select = Listbox(self.frame_right, yscrollcommand=self.scroll_bar.set, height=12)
         self.scroll_bar.config(command=self.select.yview)
         self.scroll_bar.pack(side=RIGHT, fill=Y) 
         self.select.pack(side=LEFT, fill="both", padx=0, pady=0)  
-
 
         # Create both buttons in frame_bottom with commands to open PlotView
         self.button_wpgma = Button(self.frame_bottom, text="WPGMA", font="arial 12 bold", width=12)
@@ -84,7 +95,9 @@ class DashView:
 
         self.button_nj = Button(self.frame_bottom, text="Neighbor Joining", font="arial 12 bold", width=12)
         self.button_nj.pack(side=LEFT, padx=5, fill="both", expand=True)
-#-------------------------------------------------------------------------           
+
+        Label(self.frame_copyright, text="© 2024 Seyed Morsali, Christina Kim. All Rights Reserved.", bg="dark gray", font='arial 8 bold', anchor="s").pack(side=TOP, fill="x",anchor="s")
+        
 class PlotView:
     def __init__(self, model, tree_type):
         self.model = model
